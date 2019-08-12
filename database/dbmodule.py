@@ -7,10 +7,10 @@ def dbconnection():
 
     # localhost
     # mydb = mysql.connector.connect(
-    # 		host="localhost",
-    # 		user="root",
-    # 		passwd="",
-    # 		database="dbtest"
+    #       host="localhost",
+    #       user="root",
+    #       passwd="",
+    #       database="dbtest"
     # )
 
     # webhosteddb
@@ -588,11 +588,11 @@ class votes_db:
     #type = 'post' or 'comment'
     # item_id = the post or comment ID
     # if saving the post or comment, set vote = 0 or null.
-    def add_vote(username, item_id, save, vote, type):
+    def add_vote(username, postId, commentId, save, vote):
 
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)
-        sql = f"INSERT INTO votes (userid, postId, isSaved, vote, type) VALUES ((select id from users where username = '{username}'), {item_id}, {save}, {vote}, {type})"
+        sql = f"INSERT INTO votes (userId, postId, commentId, isSaved, vote) VALUES ((select id from users where username = '{username}'), {item_id}, {save}, {vote})"
 
         try:
             cursor.execute(sql)
