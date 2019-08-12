@@ -4,12 +4,12 @@ import datetime
 import os
 from . import secrets
 
-for key in dict(os.environ).keys():
+# for key in dict(os.environ).keys():
 
-    print(type(key))
-    print(key)
-    print(dict(os.environ)[key])
-    print()
+#     print(type(key))
+#     print(key)
+#     print(dict(os.environ)[key])
+#     print()
 
 # print(dict(os.environ)['HOST'])
 
@@ -41,11 +41,11 @@ def dbconnection():
     #     #   database="cisc3140"
     # print(password1)
     mydb = mysql.connector.connect(
-        host=dict(os.environ)['HOST'],
-        user=dict(os.environ)['USERDB'],
-        password=dict(os.environ)['PW'],
+        host=os.environ.get('HOST'),
+        user=os.environ.get('USERDB'),
+        password=os.environ.get('PW'),
         # test db
-        database=dict(os.environ)['DB'],
+        database=os.environ.get('DB'),
         # deploymentdb
         #   database="cisc3140" 
     )
