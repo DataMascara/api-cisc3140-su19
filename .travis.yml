@@ -2,17 +2,14 @@ dist: xenial
 language: python
 sudo: required
 python: '3.7'
-# before_script:
-#   - cd app
 script:
-  - python test.py
+- python test.py
 install:
-  - pip install -r requirements.txt
+- pip install -r requirements.txt
 deploy:
   provider: heroku
   api_key:
-    secure: 
+    secure: XZI4/5vxTeBEgJXIauVTTO0sQJ9kaLU2YlSoFaO6w+ZEhHCTdpEfhbVgNqNYBO7Tz+b2ti1p6pAgsQJhk9LXP5fuI9YAJNL5Etv7r0quBob0/gOFG2kFqc+uyfho/1NrdxiArlOXamJDtrvo7nwEXQGAXY03XfD4DWW2rDvLV15DAECN9ffQYvOJzHZXLue51QaNfBIAFsP1C759ZCrwdcZdm70sp4m2iUVYAujXRQIy6Noh0ic+SAHfTQ7lA+gLLLsTK2PB1mSGBrp/7HfHOyBH+hbDCvx6NX/YsoDOuvxuaYW24i9zqyhsLMIb7VOhHwbnVsKG6Z0BWLPvY3MsMw2hy/dr3xeSTS53y+WlrA5tqhCAYLCxq6614xvNjfiY2aUIo4xa4NUgDu5Ok9aUiMiFQ8dPjtAobV4pQmdfNFzr/7aCiJWGvV0m/UYVKSDg0hbyZdEcXuhomvDLNXqymE6GAQrhA6ecTInNv04ADMVUZ5/SsY2JXbuzBjciH/yNPqnGohfPGDpOGRCJnAn68bYMMpLhJQlAFim3DGIh65ZHXFH+eeisZ5gXBAnXWk11ptnkzk0dEcSHS2ojQ6HXQE5KnnEqRBSs1Zng+kAMruVQ47C9V3ocWQn7WVzbHFOYgYgvqc5IWzDNhOTaSZE5j6rXWsBb3nOAPmtMU+wswMk=
   app: bc-api
   on:
     repo: Maker-Mark/bc-api
-    branch: master
