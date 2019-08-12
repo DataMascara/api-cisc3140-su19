@@ -196,6 +196,7 @@ def new_post():
 
 # Function dbmodule.posts_db.all_posts_by(column_name, data_value)
 # dbmodule.posts_db.all_posts_by('portId', 1)
+
 # dbmodule.posts_db.all_posts_by('portName', 'main')
 @app.route("/posts-by-portname/", methods=["GET"])
 def get_posts():
