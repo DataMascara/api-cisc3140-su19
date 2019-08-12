@@ -18,8 +18,8 @@ def dbconnection():
    
     mydb = mysql.connector.connect(
         host=os.environ.get('HOST'),
-        user=os.environ.get('USER'),,
-        passwd=os.environ.get('PW'),,
+        user=os.environ.get('USER'),
+        passwd=os.environ.get('PW'),
         # test db
         database= os.environ.get('DB'),
         # deploymentdb
