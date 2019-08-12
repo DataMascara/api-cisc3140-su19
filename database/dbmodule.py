@@ -16,15 +16,14 @@ def dbconnection():
     # webhosteddb
    
     mydb = mysql.connector.connect(
-        host=secrets.info.host(),
-        user=secrets.info.user(),
-        passwd=secrets.info.pw(),
+        host=os.environ.get('HOST'),
+        user=os.environ.get('USER'),,
+        passwd=os.environ.get('PW'),,
         # test db
-        database= secrets.info.db()
+        database= os.environ.get('DB'),
         # deploymentdb
         #   database="cisc3140"
     )
-    print(secrets.info.host())
 
     return mydb
 
