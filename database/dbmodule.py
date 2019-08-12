@@ -1,6 +1,7 @@
 import mysql.connector
 import json
 import datetime
+from . import secrets
 
 
 def dbconnection():
@@ -14,15 +15,17 @@ def dbconnection():
     # )
 
     # webhosteddb
+   
     mydb = mysql.connector.connect(
-        host="35.239.141.59",
-        user="backendteam",
-        passwd="UZSDmp7J2J2ZYHw",
+        host=secrets.info.host(),
+        user=secrets.info.user(),
+        passwd=secrets.info.pw(),
         # test db
-        database="test_db"
+        database= secrets.info.db()
         # deploymentdb
         #   database="cisc3140"
     )
+    print(secrets.info.host())
 
     return mydb
 
