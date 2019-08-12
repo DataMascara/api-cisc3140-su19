@@ -1,0 +1,9 @@
+class info:
+    def host():
+        return "35.239.141.59"
+    def user():
+        return "backendteam"
+    def pw():    
+        return "UZSDmp7J2J2ZYHw"
+    def db():   
+        return "test_db"
