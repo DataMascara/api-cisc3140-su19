@@ -2,7 +2,7 @@ import mysql.connector
 import json
 import datetime
 import os
-from . import secrets
+
 
 # for key in dict(os.environ).keys():
 
