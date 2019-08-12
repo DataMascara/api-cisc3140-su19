@@ -37,12 +37,13 @@ CREATE TABLE `posts`(
  `id`       integer NOT NULL auto_increment,      #auto generated
  `title`	varchar(100) NOT NULL,				
  `text`     text NOT NULL ,
+ `imageUrl` text NULL ,
  `isDeleted`    boolean NOT NULL DEFAULT 0,           #is post deleted or not
  `portId`       integer NOT NULL ,                    #FK referencing the post
  `userId`       integer NOT NULL ,                    #FK referencing the author from users table
  `dateModified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, #auto updated
  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,        #auto generated on row insertion
-  
+
 PRIMARY KEY (`id`),
 KEY `fkIdx_28` (`id`),
 CONSTRAINT `FK_28` FOREIGN KEY `fkIdx_28` (`userId`) REFERENCES `users` (`id`),
@@ -61,7 +62,7 @@ CREATE TABLE `comments`(
  `userId`       integer NOT NULL ,                      #FK referencing the author from users table
  `dateModified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, #auto updated
  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,        #auto generated on row insertion
-  
+
 
 PRIMARY KEY (`id`),
 KEY `fkIdx_51` (`userId`),
@@ -74,11 +75,11 @@ CONSTRAINT `FK_54` FOREIGN KEY `fkIdx_54` (`postId`) REFERENCES `posts` (`id`)
 CREATE TABLE `subscriptions`(
  `id`       integer NOT NULL auto_increment,     #auto generated
  `isActive`     boolean NOT NULL default 1,          #current subscription or deleted
- `portId`       integer NOT NULL ,                   #FK referencing the port 
+ `portId`       integer NOT NULL ,                   #FK referencing the port
  `userId`       integer NOT NULL ,                   #FK referencing the user
  `dateModified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, #auto updated
  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,        #auto generated on row insertion
-  
+
 PRIMARY KEY (`id`),
 KEY `fkIdx_14` (`userId`),
 CONSTRAINT `FK_14` FOREIGN KEY `fkIdx_14` (`userId`) REFERENCES `users` (`id`),
@@ -96,7 +97,7 @@ CREATE TABLE `ads`(
  `isActive` boolean not null default 0,          #is ad currently active on site or not
  `dateModified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, #auto updated
  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,        #auto generated on row insertion
-  
+
 PRIMARY KEY (`id`)
 );
 
@@ -111,7 +112,7 @@ CREATE TABLE `votes`
  `vote`  	   integer NOT NULL DEFAULT 0,			#1 for upvote, -1 for downvote, 0 for no vote
  `dateModified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, #auto updated
  `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,        #auto generated on row insertion
- 
+
 PRIMARY KEY (`id`),
 KEY `fkIdx_101` (`postId`),
 CONSTRAINT `FK_101` FOREIGN KEY `fkIdx_101` (`postId`) REFERENCES `posts` (`id`),
@@ -190,12 +191,9 @@ END; //
 DELIMITER ;
 
 
-
-
-
 create view posts_vw as
     #votes are being cast as char(10) because the integer sums were not showing up through the python functions for some reason
-select pr.name as portName, p.id as postId, p.text as postText, u.username as author, 
+select pr.name as portName, p.id as postId, p.title as postTitle, p.text as postText, p.imageUrl as image, u.username as author,
 cast(sum(vote) as char(10)) as votes, (select cast(count(id) as char(10)) from comments c where c.postId = p.id) as numComments, p.dateCreated
 from posts p
 left join users u on p.userid = u.id
@@ -204,12 +202,11 @@ left join ports pr on pr.id = p.portid
 where p.isDeleted = 0
 group by p.id
 Order by p.id;
-select * from comments;
 
 create view comments_vw as
     #votes are being cast as char(10) because the integer sums were not showing up through the python functions for some reason
 select p.postId, c.id as commentId, c.text as commentText, u.username as author, cast(sum(vote) as char(10)) as votes, parentId
-from comments c 
+from comments c
 left join posts_vw p on c.postid = p.postId
 left join votes v on v.commentid = c.id
 left join users u on u.id = c.userid
@@ -219,26 +216,27 @@ group by c.id;
 
 create view subscriptions_vw as
 select username, p.id as portId, p.name as portName
-from subscriptions s 
+from subscriptions s
 join users u on u.id = s.userid
 join ports p on p.id = s.portid
 where s.isActive = 1;
 
 create view votes_vw as
   #votes are being cast as char(10) because the integer sums were not showing up through the python functions for some reason
-select distinct p.id as postId, p.text as Text, u.username as author, uv.username as voteUsername, vote, isSaved, 'Post' as type
+select distinct p.id as postId, p.title as Title, p.imageUrl as Image, p.text as Text, u.username as author, uv.username as voteUsername, vote, isSaved, 'Post' as type
 from posts p
 left join users u on p.userid = u.id
 left join votes v on v.postid = p.id
 join users uv on uv.id = v.userid
 where isDeleted = 0
 union
-select distinct c.id as commentId, c.text as Text, u.username as author, uv.username as voteUsername, vote, isSaved, 'Comment' as type
+select distinct c.id as commentId, '' as Title, '' as Image, c.text as Text, u.username as author, uv.username as voteUsername, vote, isSaved, 'Comment' as type
 from comments c
 left join users u on u.id = c.userid
 left join votes v on v.commentid = c.id
 join users uv on uv.id = v.userid
 where c.isDeleted = 0;
+
 
 create view users_vw as
 select u.id as userId, password, username, first, last, email, description, avatarUrl, cast(sum(vote) as char(10)) as votes
@@ -248,8 +246,20 @@ where u.isActive = 1
 group by u.id;
 
 
+DELIMITER $$
 
+CREATE FUNCTION add_post(title varchar(360), text varchar(1000), port_name varchar(30), author varchar(30), image text) RETURNS INTEGER
+    DETERMINISTIC
+BEGIN
+    DECLARE newId INTEGER;
 
+    INSERT INTO posts (title, text, portId, userid, imageUrl) VALUES
+    (title, text, (select id from ports where name = port_name), (select id from users where username = author), image);
+
+ 	SET newId =  LAST_INSERT_ID();
+
+ RETURN (newId);
+END
 
 
 
