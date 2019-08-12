@@ -276,6 +276,23 @@ def get_subscribed_posts():
     return json.dumps({"posts": posts})
 
 
+@app.route("/votes-for-username/", methods=["GET"])
+def get_votes():
+    res = request.get_json()
+    username = res['username']
+    print(username)
+    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
+    print(upvotes)
+    return upvotes
+
+
+@app.route("/vote/", methods=['POST'])
+def vote():
+    res = request.get_json()
+    username = res['username']
+    postId = res['postId']
+    value = res['value']
+
 """
 ---- Getting All Users ----
 """

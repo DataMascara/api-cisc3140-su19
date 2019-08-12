@@ -5,7 +5,6 @@ from . import secrets
 
 
 def dbconnection():
-
     # localhost
     # mydb = mysql.connector.connect(
     # 		host="localhost",
@@ -58,6 +57,7 @@ class subscriptions_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'all_subscriptions for {data_value}': json_data}, default=myconverter)
 
     # input: email (string), password (hashed string), username (string), first (String), last (string), description (string), avatarUrl (string)
@@ -87,7 +87,7 @@ class subscriptions_db:
 
         return subscriptions_db.all_subscriptions_by('username', username)
 
-    #input: username (string)
+    # input: username (string)
     def update_subscription(username, port_name, value):
 
         mydb = dbconnection()
@@ -140,6 +140,7 @@ class ports_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'all_ports': json_data}, default=myconverter)
 
     def add_port(name, description):
@@ -194,14 +195,15 @@ class users_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'all_users': json_data}, default=myconverter)
 
     # input: column_name (string), data_value (string or int)
     # options and types:
-    #column_name: data_value
-    #user_id: int
-    #username: string
-    #email: string
+    # column_name: data_value
+    # user_id: int
+    # username: string
+    # email: string
     # output: userid, username, email, first, last, avatarUrl
     # e.g. http://localhost:5000/find_users?column=username&value=chalshaff12
     # or http://localhost:5000/find_users?column=email&value=chalshaff12@gmail.com
@@ -225,6 +227,7 @@ class users_db:
         # close database connection
         cursor.close()
         mydb.close()
+
         # catch datetime datatype error for json
 
         def myconverter(o):
@@ -260,7 +263,7 @@ class users_db:
 
         return users_db.find_users('username', username)
 
-#input: username (string)
+    # input: username (string)
     def update_user(username, column_name, value_name):
 
         mydb = dbconnection()
@@ -284,7 +287,7 @@ class users_db:
 
         return users_db.find_users('username', username)
 
-    #input: username (string)
+    # input: username (string)
     def delete_user(username):
 
         mydb = dbconnection()
@@ -311,7 +314,7 @@ class users_db:
 
 class posts_db:
 
-    #column_name = port_id or author
+    # column_name = port_id or author
     # data_value depends on the column (always a string)
     # e.g. http://localhost:5000/all_posts_by?column=author&value=chalshaff12
     # or http://localhost:5000/all_posts_by?column=port_id&value=1
@@ -339,9 +342,10 @@ class posts_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'posts': json_data}, default=myconverter)
 
-   #column_name = port_id or author
+    # column_name = port_id or author
     # data_value depends on the column (always a string)
     # e.g. http://localhost:5000/all_posts_by?column=author&value=chalshaff12
     # or http://localhost:5000/all_posts_by?column=port_id&value=1
@@ -369,13 +373,15 @@ class posts_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'posts': json_data}, default=myconverter)
 
-    def add_post(title, text, port_name, author):
+    def add_post(title, text, port_name, author, image):
 
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)
-        sql = f"INSERT INTO posts (title, text, portId, userid) VALUES ('{title}','{text}', (select id from ports where name = '{port_name}'), (select id from users where username = '{author}'))"
+        sql = f"SELECT add_post('{title}','{text}','{port_name}','{author}', '{image}')"
+        # sql = f"INSERT INTO posts (title, text, portid, userid, imageUrl) VALUES ('{title}','{text}',(select id from ports where name = '{port_name}'), (select id from users where username = '{author}'), '{image}')"
 
         try:
             cursor.execute(sql)
@@ -383,15 +389,35 @@ class posts_db:
         except mysql.connector.Error as err:
             return json.dumps({'error': str(err)})
 
-        # close database connection
+        result_set = cursor.fetchall()  # save sql result set
+        # convert columns and rows into json data
+
         cursor.close()
         mydb.close()
 
-        def myconverter(o):
-            if isinstance(o, datetime.datetime):
-                return o.__str__()
-                # PLEASE ADD WAY TO GET POST BY TITLE
-        return posts_db.find_posts_by_text("postText", text)
+        return posts_db.all_posts_by('postId', result_set[0][0])
+
+    # def add_post(title, text, port_name, author, image):
+
+    #     mydb = dbconnection()
+    #     cursor = mydb.cursor(buffered=True)
+    #     sql = f"INSERT INTO posts (title, text, portId, userid, imageUrl) VALUES ('{title}','{text}', (select id from ports where name = '{port_name}'), (select id from users where username = '{author}'), '{image}')"
+
+    #     try:
+    #         cursor.execute(sql)
+    #         mydb.commit()
+    #     except mysql.connector.Error as err:
+    #         return json.dumps({'error': str(err)})
+
+    #     # close database connection
+    #     cursor.close()
+    #     mydb.close()
+
+    #     def myconverter(o):
+    #         if isinstance(o, datetime.datetime):
+    #             return o.__str__()
+    #             # PLEASE ADD WAY TO GET POST BY TITLE
+    #     return posts_db.find_posts_by_text("postText", text)
 
     def delete_post(post_id):
 
@@ -464,6 +490,7 @@ class comments_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'comments': json_data}, default=myconverter)
 
     def add_comment(text, post_id, parent_id, author):
@@ -535,14 +562,14 @@ class comments_db:
 
 class votes_db:
 
-    #type = 'post' or 'comment'
-    #column_name = 'saved' or 'vote'
+    # type = 'post' or 'comment'
+    # column_name = 'saved' or 'vote'
     # data_value = '1' for saved, '1' for upvotes, '-1' for downvotes
-    def all_votes_by(username, column_name, data_value, type):
+    def all_votes_by(username, column_name, data_value, type, operation):
 
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)
-        sql = f"SELECT * FROM votes_vw where userId = (select id from users where username = '{username}') and {column_name} = '{data_value}' and type = '{type}'"
+        sql = f"SELECT * FROM votes_vw where voteUsername = '{username}' and {column_name} {operation} '{data_value}' and type = '{type}'"
 
         try:
             cursor.execute(sql)
@@ -562,11 +589,12 @@ class votes_db:
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
+
         return json.dumps({'voted_data': json_data}, default=myconverter)
 
-    #saved = 1 or 0
-    #vote = -1, 0 or 1
-    #type = 'post' or 'comment'
+    # saved = 1 or 0
+    # vote = -1, 0 or 1
+    # type = 'post' or 'comment'
     # item_id = the post or comment ID
     # if saving the post or comment, set vote = 0 or null.
     def add_vote(username, item_id, save, vote, type):
@@ -593,7 +621,7 @@ class votes_db:
 
         # if it is a post, put null for comment_id
         # if it is a comment, put null for post_id
-        #column_name = 'isSaved' or 'vote'
+        # column_name = 'isSaved' or 'vote'
         # data_value = 1 or 0 for 'isSaved', 1,0,-1 for 'vote'
 
     def update_vote(username, post_id, comment_id, column_name, data_value):
