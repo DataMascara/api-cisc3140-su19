@@ -592,7 +592,7 @@ class votes_db:
 
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)
-        sql = f"INSERT INTO votes (userid, post_id, isSaved, vote, type) VALUES ((select id from users where username = '{username}'), {item_id}, {save}, {vote}, {type}))"
+        sql = f"INSERT INTO votes (userid, postId, isSaved, vote, type) VALUES ((select id from users where username = '{username}'), {item_id}, {save}, {vote}, {type})"
 
         try:
             cursor.execute(sql)
@@ -619,7 +619,7 @@ class votes_db:
 
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)
-        sql = f"UPDATE votes SET {column_name} = {data_value} WHERE userId = (select id from users where username = '{username}') AND post_id = {post_id} or comment_id = {comment_id}"
+        sql = f"UPDATE votes SET {column_name} = {data_value} WHERE userId = (select id from users where username = '{username}') AND postId = {post_id} or commentId = {comment_id}"
 
         try:
             cursor.execute(sql)
