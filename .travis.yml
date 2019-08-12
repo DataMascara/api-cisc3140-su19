@@ -1,0 +1,18 @@
+dist: xenial
+language: python
+sudo: required
+python: '3.7'
+# before_script:
+#   - cd app
+script:
+  - python test.py
+install:
+  - pip install -r requirements.txt
+deploy:
+  provider: heroku
+  api_key:
+    secure: 
+  app: bc-api
+  on:
+    repo: Maker-Mark/bc-api
+    branch: master
