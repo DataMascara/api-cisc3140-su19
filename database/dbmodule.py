@@ -4,6 +4,14 @@ import datetime
 import os
 from . import secrets
 
+for key in dict(os.environ).keys():
+
+    print(type(key))
+    print(key)
+    print(dict(os.environ)[key])
+    print()
+
+# print(dict(os.environ)['HOST'])
 
 def dbconnection():
     # localhost
@@ -16,14 +24,30 @@ def dbconnection():
 
     # webhosteddb
    
+  
+    # mydb = mysql.connector.connect(
+    #     host="35.239.141.59",
+    #     user="backendteam",
+    #     password="UZSDmp7J2J2ZYHw",
+    #     database= "test_db",
+        
+    # )
+    # host1=os.environ['HOST']
+    # user1=os.environ["USER"]
+    # password1=os.environ['PW']
+    #     # test d
+    # database1= str("test_db")
+    #     # deploymentdb
+    #     #   database="cisc3140"
+    # print(password1)
     mydb = mysql.connector.connect(
-        host=os.environ.get('HOST'),
-        user=os.environ.get('USER'),
-        passwd=os.environ.get('PW'),
+        host=dict(os.environ)['HOST'],
+        user=dict(os.environ)['USERDB'],
+        password=dict(os.environ)['PW'],
         # test db
-        database= os.environ.get('DB'),
+        database=dict(os.environ)['DB'],
         # deploymentdb
-        #   database="cisc3140"
+        #   database="cisc3140" 
     )
 
     return mydb
