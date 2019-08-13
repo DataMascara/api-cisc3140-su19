@@ -360,7 +360,8 @@ def add_comment_post():
         parent_id = res['parent_id']
     except: 
         parent_id = None
-    comment = json.loads(dbmodule.comments_db.add_comment(text, post_id, parent_id, author))
+    print("Im not here")
+    comment = dbmodule.comments_db.add_comment(text, post_id, parent_id, author)
     print("okay")
     print(comment)
     return comment
