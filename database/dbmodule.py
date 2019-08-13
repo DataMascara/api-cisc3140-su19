@@ -54,7 +54,7 @@ class subscriptions_db:
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)    #open db cursor
 
-        sql = f"INSERT INTO subscriptions (userId, portId) VALUES ((SELECT id FROM users WHERE username = '{username}'), (select id from ports where name = '{port_name}'))"
+        sql = f"INSERT INTO subscriptions (userId, portId) VALUES ((SELECT id FROM users WHERE username = '{username}'), (SELECT id FROM ports WHERE name = '{port_name}'))"
 
         try:
             cursor.execute(sql)
