@@ -21,7 +21,7 @@ def add_port():
 	name = request.args.get('name')
 	description = request.args.get('description')
 	#calling the insert statement function
-	result_set = dbmodule.ports_Db.add_port(name, description)
+	result_set = dbmodule.ports_db.add_port(name, description)
 	return str(result_set)
 
 #select all users with http://localhost:5000/all_users
@@ -194,3 +194,32 @@ def all_votes_by():
 	operation = request.args.get('operation')
 	result_set = dbmodule.votes_db.all_votes_by(username, column, value, type, operation)
 	return str(result_set)
+
+
+@app.route('/addVote')
+def add_vote():
+	#getting parameters and setting variables
+	username = request.args.get('username')
+	post_id = request.args.get('post_id')
+	comment_id = request.args.get('comment_id')
+	save = request.args.get('save')
+	vote = request.args.get('vote')
+	
+	#calling the insert statement function
+	result_set = dbmodule.votes_db.add_vote(username, post_id, comment_id, save, vote)
+	return str(result_set)
+
+@app.route('/updateVote')
+def update_vote():
+	#getting parameters and setting variables
+	username = request.args.get('username')
+	post_id = request.args.get('post_id')
+	comment_id = request.args.get('comment_id')
+	column = request.arts.get('column')
+	value = request.args.get('value')
+	#calling the insert statement function
+	result_set = dbmodule.votes_db.update_vote(username, post_id, comment_id, column, value)
+	return str(result_set)
+
+
+
