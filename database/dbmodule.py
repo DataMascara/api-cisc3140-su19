@@ -1,27 +1,16 @@
 import mysql.connector
 import json
 import datetime
+import os
 
 
 def dbconnection():
 
-    # localhost
-    # mydb = mysql.connector.connect(
-    #       host="localhost",
-    #       user="root",
-    #       passwd="",
-    #       database="dbtest"
-    # )
-
-    # webhosteddb
     mydb = mysql.connector.connect(
-        host="35.239.141.59",
-        user="backendteam",
-        passwd="UZSDmp7J2J2ZYHw",
-        # test db
-        database="test_db"
-        # deploymentdb
-        #   database="cisc3140"
+        host=os.environ.get('HOST'),
+        user=os.environ.get('USERDB'),
+        password=os.environ.get('PW'),
+        database=os.environ.get('DB'),
     )
 
     return mydb
