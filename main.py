@@ -205,12 +205,19 @@ def new_post():
 @app.route("/posts-by-portname/", methods=["GET"])
 def get_posts():
     res = request.get_json()
-
     port_name = res["portname"]
     posts = json.loads(dbmodule.posts_db.all_posts_by("portname", port_name))["posts"]
     port = {"name": port_name, "posts": posts}
     return port
 
+@app.route("/post-by-title/", methods= ["GET"])
+def get_post():
+    req = request.get_json()
+    title = req['title']
+    print(title)
+    db_res = json.loads(dbmodule.posts_db.all_posts_by('postTitle', title))['posts'][0]
+    print(db_res) 
+    return db_res
 
 @app.route("/my-posts/", methods=["GET"])
 def get_posts_username():

@@ -299,8 +299,9 @@ class posts_db:
 
     #column_name = port_id or author
     # data_value depends on the column (always a string)
-    # e.g. http://localhost:5000/all_posts_by?column=author&value=chalshaff12
-    # or http://localhost:5000/all_posts_by?column=port_id&value=1
+    #You can do this with all_posts_by(column_name, data_value)
+    # posts_db.all_posts_by('postId', 1)
+    # posts_db.all_posts_by('postTitle', 'Textbooks for Cheap!')
     def all_posts_by(column_name, data_value):
 
         mydb = dbconnection()
