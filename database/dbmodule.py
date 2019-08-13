@@ -577,11 +577,11 @@ class votes_db:
     #type = 'post' or 'comment'
     # item_id = the post or comment ID
     # if saving the post or comment, set vote = 0 or null.
-    def add_vote(username, postId, commentId, save, vote):
+    def add_vote(username, post_id, comment_id, save, vote):
 
         mydb = dbconnection()
         cursor = mydb.cursor(buffered=True)
-        sql = f"INSERT INTO votes (userId, postId, commentId, isSaved, vote) VALUES ((select id from users where username = '{username}'), {item_id}, {save}, {vote})"
+        sql = f"INSERT INTO votes (userId, postId, commentId, isSaved, vote) VALUES ((select id from users where username = '{username}'), {post_id}, {comment_id}, {save}, {vote})"
 
         try:
             cursor.execute(sql)
@@ -597,7 +597,7 @@ class votes_db:
             if isinstance(o, datetime.datetime):
                 return o.__str__()
 
-        return posts_db.all_votes_by('author', username)
+        return votes_db.all_votes_by('author', username)
 
         # if it is a post, put null for comment_id
         # if it is a comment, put null for post_id
