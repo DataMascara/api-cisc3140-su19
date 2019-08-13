@@ -20,7 +20,7 @@ def add_port():
 	#getting parameters and setting variables
 	name = request.args.get('name')
 	description = request.args.get('description')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.ports_db.add_port(name, description)
 	return str(result_set)
 
@@ -52,7 +52,7 @@ def addUser():
 	last = request.args.get('last')
 	description = request.args.get('description')
 	avatarurl = request.args.get('avatarurl')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.users_db.add_user(email, password, username, first, last, description, avatarurl)
 	return str(result_set)
 
@@ -63,7 +63,7 @@ def update_user():
 	column = request.args.get('column')
 	value = request.args.get('value')
 	
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.users_db.update_user(username, column, value)
 	return str(result_set)
 
@@ -72,7 +72,7 @@ def update_user():
 def delete_user():
 	#getting parameters and setting variables
 	username = request.args.get('username')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.delete_user(username)
 	return str(result_set)
 
@@ -93,7 +93,7 @@ def add_post():
 	port_name = request.args.get('port_name')
 	image = request.args.get('image')
 
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.posts_db.add_post(title, text, port_name, author, image)
 	return str(result_set)
 
@@ -101,7 +101,7 @@ def add_post():
 def delete_post():
 	#getting parameters and setting variables
 	post_id = request.args.get('post_id')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.posts_db.delete_post(post_id)
 	return str(result_set)
 
@@ -113,7 +113,7 @@ def update_post():
 	column = request.args.get('column')
 	value = request.args.get('value')
 	
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.posts_db.update_post(post_id, column, value)
 	return str(result_set)
 
@@ -133,7 +133,7 @@ def add_comment():
 	post_id = request.args.get('post_id')
 	parent_id = request.args.get('parent_id')
 	
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.comments_db.add_comment(text, post_id, parent_id, author)
 	return str(result_set)
 
@@ -141,7 +141,7 @@ def add_comment():
 def delete_comment():
 	#getting parameters and setting variables
 	_comment_id = request.args.get('comment_id')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule._comment_db.delete_comment(_comment_id)
 	return str(result_set)
 
@@ -152,7 +152,7 @@ def update_comment():
 	comment_id = request.args.get('comment_id')
 	text = request.args.get('text')
 	
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.comments_db.update_comment(comment_id, text)
 	return str(result_set)
 
@@ -171,7 +171,7 @@ def add_subscription():
 	username = request.args.get('username')
 	port_id = request.args.get('port_id')
 	
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.comments_db.subscriptions_db(username, port_id)
 	return str(result_set)
 
@@ -181,7 +181,7 @@ def update_subscription():
 	username = request.args.get('username')
 	port_id = request.args.get('port_id')
 	value = request.args.get('value')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.subscriptions_db.update_subscription(username, portId, value)
 	return str(result_set)
 
@@ -204,8 +204,7 @@ def add_vote():
 	comment_id = request.args.get('comment_id')
 	save = request.args.get('save')
 	vote = request.args.get('vote')
-	
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.votes_db.add_vote(username, post_id, comment_id, save, vote)
 	return str(result_set)
 
@@ -217,7 +216,7 @@ def update_vote():
 	comment_id = request.args.get('comment_id')
 	column = request.arts.get('column')
 	value = request.args.get('value')
-	#calling the insert statement function
+	#calling the function from dbmodule
 	result_set = dbmodule.votes_db.update_vote(username, post_id, comment_id, column, value)
 	return str(result_set)
 

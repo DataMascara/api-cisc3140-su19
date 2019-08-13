@@ -465,7 +465,7 @@ class comments_db:
             cursor.execute(sql)
             mydb.commit()
         except mysql.connector.Error as err:
-            return json.dumps([{'error': str(err)},'sql:' sql])
+            return json.dumps({'error': str(err)})
 
         # close database connection
         cursor.close()
