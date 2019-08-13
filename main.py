@@ -169,7 +169,7 @@ def get_all_ports():
     ports = dbmodule.ports_db.all_ports()
     print(ports)
     # Simply return the json of ports.
-    return json.loads(ports)
+    return ports
 
 
 # Returns All ports from database
