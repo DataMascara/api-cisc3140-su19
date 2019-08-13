@@ -335,6 +335,20 @@ def vote():
             new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
     return new_votes
 
+'''
+-----COMMENTS FROM POST
+'''
+@app.route("/comments-by-post/", methods=["GET"])
+def get_comments():
+    res = request.get_json()
+    # Get's comments given post ID
+    post_id = res['id']
+    comments = json.loads(dbmodule.comments_db.all_comments_by('postId',post_id))
+    print("okay")
+    print(comments)
+    return comments
+
+
 
 """
 ---- Getting All Users ----
