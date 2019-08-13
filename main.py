@@ -308,12 +308,13 @@ def vote():
     # if originalValue == '' and value == ++ you're upvoting
     # if originalValue == '-1' and value == ++ you're upvoting
     elif originalValue == '' and value == '++' or originalValue == '-1' and value == '++':
-        new_votes = json.loads(dbmodule.votes_db.add_vote(username, postId, 'null', 0, 1))
+        new_votes = dbmodule.votes_db.add_vote(username, postId, 'null', 0, 1)
         print(new_votes)
         try:
             print(new_votes['voted_data'])
         except:
-            dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1)
+            response = dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1)
+            print(response)
             new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
     # if originalValue == '' and value == -- you're downvoting
     # if originalValue == '-1' and value == -- you're downvoting
@@ -324,8 +325,8 @@ def vote():
             print(new_votes['voted_data'])
         except:
             dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', -1)
-            json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
-
+            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
+    print(new_votes)
     return new_votes
 
 
