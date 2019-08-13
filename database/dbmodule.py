@@ -597,7 +597,7 @@ class votes_db:
             if isinstance(o, datetime.datetime):
                 return o.__str__()
 
-        return votes_db.all_votes_by('author', username)
+        return votes_db.all_votes_by(username, 'vote', 0, 'post', '<>')
 
         # if it is a post, put null for comment_id
         # if it is a comment, put null for post_id

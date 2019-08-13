@@ -295,37 +295,37 @@ def vote():
     value = res['value']
     originalValue = res['originalValue']
 
-    # if originalValue is 1 and value is ++ then user is removing vote
-    # if originalValue is -1 and value is -- then user is removing vote
-    if originalValue == 1 and value == "++" or originalValue == -1 and value == "--":
-        response = json.loads(dbmodule.votes_db.add_vote(username, postId, 0, 0, 'post'))
+    # if originalValue == 1 and value == ++ you're removing the vote
+    # if originalValue == -1 and value == -- you're removing the vote
+    if originalValue == '1' and value == '++' or originalValue == '-1' and value == '--':
+        response = json.loads(dbmodule.votes_db.add_vote(username, postId, 'null', 0, 0))
+        print(response)
         try:
-            print(response["error"])
-            return json.loads(dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 0))
-        except:
+            print(response['voted_data'])
             return response
+        except:
+            return dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 0)
+    # if originalValue == '' and value == ++ you're upvoting
+    # if originalValue == '-1' and value == ++ you're upvoting
+    elif originalValue == '' and value == '++' or originalValue == '-1' and value == '++':
+        response = json.loads(dbmodule.votes_db.add_vote(username, postId, 'null', 0, 1))
+        print(response)
+        try:
+            print(response['voted_data'])
+            return response
+        except:
+            return dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1)
+    # if originalValue == '' and value == -- you're downvoting
+    # if originalValue == '-1' and value == -- you're downvoting
+    elif originalValue == '' and value == '--' or originalValue == '1' and value == '--':
+        response = json.loads(dbmodule.votes_db.add_vote(username, postId, 'null', 0, -1))
+        print(response)
+        try:
+            print(response['voted_data'])
+            return response
+        except:
+            return dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', -1)
 
-    # if originalValue is '' and value is ++ then user is upvoting
-    # if originalValue is -1 and value is ++ then user is upVoting
-    elif originalValue == "" and value == "++" or originalValue == -1 and value == "++":
-        response = json.loads(dbmodule.votes_db.add_vote(username, postId, 0, 1, 'post'))
-        try:
-            # If there is an error then that means there is already an subscription so we will have to set it to active
-            print(response["error"])
-            return json.loads(dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1))
-        except:
-            return response
-
-    # if originalValue is 1 and value is -- then user is downvoting
-    # if originalValue is '' and value is -- then user is downvoting
-    elif originalValue == "1" and value == "--" or originalValue == "" and value == "--":
-        response = json.loads(dbmodule.votes_db.add_vote(username, postId, 0, -1, 'post'))
-        try:
-            # If there is an error then that means there is already an subscription so we will have to set it to active
-            print(response["error"])
-            return json.loads(dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', -1))
-        except:
-            return response
 
 """
 ---- Getting All Users ----
