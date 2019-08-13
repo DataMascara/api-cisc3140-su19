@@ -177,6 +177,10 @@ def get_all_ports():
 def new_post():
     res = request.get_json()  # Grab the response as a python dict from json sent
     # User Validation to DB goes here
+    try:
+        img = res['img']
+    except:
+        img = 'https://media.wired.com/photos/5cdefc28b2569892c06b2ae4/master/w_1500,c_limit/Culture-Grumpy-Cat-487386121-2.jpg'     
     title = res["title"]
     text = res["text"]
     portname = res["portname"]
@@ -186,7 +190,7 @@ def new_post():
     ]
     # Returns the added post from this user
     response = json.loads(
-        dbmodule.posts_db.add_post(title, text, portname, user_id, username)
+        dbmodule.posts_db.add_post(title, text, portname, username, img)
     )
     # Grab the added post
     db_res = json.loads(dbmodule.posts_db.find_posts_by_text("postText", text))
