@@ -347,6 +347,34 @@ def get_comments():
     print("okay")
     print(comments)
     return comments
+'''
+---- ADD COMMENT -----
+'''
+@app.route("/add-comment/", methods = ["POST"])
+def add_comment_post():
+    res = request.get_json()
+    text = res['text']
+    post_id = res['postId']
+    author = res['author']
+    try:
+        parent_id = res['parent_id']
+    except: 
+        parent_id = None
+    comment = json.loads(dbmodule.comments_db.add_comment(text, post_id, parent_id, author))
+    print("okay")
+    print(comment)
+    return comment
+'''
+---- POST BY ID  -----
+'''
+@app.route("/post-by-id/", methods = ["GET"])
+def post_by_id():
+    res = request.get_json()
+    post_id = res['id']
+    post = json.loads(dbmodule.posts_db.all_posts_by("postId", post_id))
+    print(post)
+    return post
+
 
 
 
