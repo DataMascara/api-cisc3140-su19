@@ -461,11 +461,11 @@ class comments_db:
         cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"INSERT INTO comments (text, postId, parentId, userId) VALUES ('{text}', {post_id}, {parent_id}, (select id from users where username = '{author}'))"
 
-        # try:
-        #     cursor.execute(sql)
-        #     mydb.commit()
-        # except mysql.connector.Error as err:
-        #     return json.dumps({'error': str(err)})
+        try:
+            cursor.execute(sql)
+            mydb.commit()
+        except mysql.connector.Error as err:
+            return json.dumps({'error': str(err)})
 
         # close database connection
         cursor.close()
@@ -475,7 +475,7 @@ class comments_db:
             if isinstance(o, datetime.datetime):
                 return o.__str__()
 
-        return sql#posts_db.all_comments('author', author)
+        return posts_db.all_comments('author', author)
 
     def delete_comment(comment_id):
         #connect to db
