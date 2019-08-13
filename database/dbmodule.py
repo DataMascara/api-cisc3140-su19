@@ -5,24 +5,23 @@ import os
 
 
 def dbconnection():
-
+    #database connection details are hidden. .env file is required 
     mydb = mysql.connector.connect(
         host=os.environ.get('HOST'),
         user=os.environ.get('USERDB'),
         password=os.environ.get('PW'),
         database=os.environ.get('DB'),
     )
-
     return mydb
 
 
 class subscriptions_db:
-    # by username, portname, or portid
+    
+    #get subscriptions by username, portname, or portid
     def all_subscriptions_by(column_name, data_value):
-
+        #connect to db
         mydb = dbconnection()
-        # create db cursor
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         # sql statement
         sql = f"SELECT * FROM subscriptions_vw WHERE {column_name} = '{data_value}'"
 
@@ -51,9 +50,9 @@ class subscriptions_db:
     # password should be hashed
     # all fields are required!!
     def add_subscription(username, port_name):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
 
         sql = f"INSERT INTO subscriptions (userId, portId) VALUES ((SELECT id FROM users WHERE username = '{username}'), (select id from ports where name = '{port_name}'))"
 
@@ -67,6 +66,7 @@ class subscriptions_db:
         cursor.close()
         mydb.close()
 
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -75,9 +75,9 @@ class subscriptions_db:
 
     #input: username (string)
     def update_subscription(username, port_name, value):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
 
         sql = f"UPDATE subscriptions SET isActive = {value} WHERE userId = (SELECT id FROM users WHERE username = '{username}') and portId = (select id from ports where name = '{port_name}')"
 
@@ -90,7 +90,8 @@ class subscriptions_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -101,10 +102,10 @@ class subscriptions_db:
 class ports_db:
 
     def all_ports():
-
+        #connect to db
         mydb = dbconnection()
         # create db cursor
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         # sql statement
         sql = '''SELECT id, name, description FROM ports where isActive = 1'''
 
@@ -129,9 +130,9 @@ class ports_db:
         return json.dumps({'all_ports': json_data}, default=myconverter)
 
     def add_port(name, description):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"INSERT INTO ports (name, description) VALUES ('{name}', '{description}')"
 
         try:
@@ -143,7 +144,7 @@ class ports_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -155,10 +156,10 @@ class users_db:
     # no input, returns all active users
     # returns fields: userid, username, email, first, last, avatarUrl
     def all_users():
-
+        #connect to db
         mydb = dbconnection()
         # create db cursor
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         # sql statement
         sql = '''SELECT * FROM users_vw'''
 
@@ -192,9 +193,9 @@ class users_db:
     # e.g. http://localhost:5000/find_users?column=username&value=chalshaff12
     # or http://localhost:5000/find_users?column=email&value=chalshaff12@gmail.com
     def find_users(column_name, data_value):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
 
         sql = f"SELECT * FROM users_vw WHERE {column_name} = '{data_value}'"
 
@@ -224,9 +225,9 @@ class users_db:
     # password should be hashed
     # all fields are required!!
     def add_user(email, password, username, first, last, avatarurl, description):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
 
         sql = f"INSERT INTO users (email, password, username, first, last, description, avatarurl) VALUES ('{email}','{password}','{username}','{first}','{last}', '{description}', '{avatarurl}')"
 
@@ -239,7 +240,7 @@ class users_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -248,9 +249,9 @@ class users_db:
 
 #input: username (string)
     def update_user(username, column_name, value_name):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
 
         sql = f"UPDATE users SET {column_name} = '{value_name}' WHERE username = '{username}'"
 
@@ -263,7 +264,7 @@ class users_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -272,9 +273,9 @@ class users_db:
 
     #input: username (string)
     def delete_user(username):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
 
         sql = f"UPDATE users SET isActive = 0 WHERE username = '{username}'"
 
@@ -287,7 +288,7 @@ class users_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -303,9 +304,9 @@ class posts_db:
     # posts_db.all_posts_by('postId', 1)
     # posts_db.all_posts_by('postTitle', 'Textbooks for Cheap!')
     def all_posts_by(column_name, data_value):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"SELECT * FROM posts_vw where {column_name} = '{data_value}'"
 
         try:
@@ -333,9 +334,9 @@ class posts_db:
     # e.g. http://localhost:5000/all_posts_by?column=author&value=chalshaff12
     # or http://localhost:5000/all_posts_by?column=port_id&value=1
     def find_posts_by_text(postText, text):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"SELECT * FROM posts_vw where {postText} = '{text}'"
 
         try:
@@ -359,9 +360,9 @@ class posts_db:
         return json.dumps({'posts': json_data}, default=myconverter)
 
     def add_post(title, text, port_name, author, image):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"SELECT add_post('{title}','{text}','{port_name}','{author}', '{image}')"
         #sql = f"INSERT INTO posts (title, text, portid, userid, imageUrl) VALUES ('{title}','{text}',(select id from ports where name = '{port_name}'), (select id from users where username = '{author}'), '{image}')"
 
@@ -380,32 +381,11 @@ class posts_db:
     
         return posts_db.all_posts_by('postId',result_set[0][0])
 
-    # def add_post(title, text, port_name, author, image):
-
-    #     mydb = dbconnection()
-    #     cursor = mydb.cursor(buffered=True)
-    #     sql = f"INSERT INTO posts (title, text, portId, userid, imageUrl) VALUES ('{title}','{text}', (select id from ports where name = '{port_name}'), (select id from users where username = '{author}'), '{image}')"
-
-    #     try:
-    #         cursor.execute(sql)
-    #         mydb.commit()
-    #     except mysql.connector.Error as err:
-    #         return json.dumps({'error': str(err)})
-
-    #     # close database connection
-    #     cursor.close()
-    #     mydb.close()
-
-    #     def myconverter(o):
-    #         if isinstance(o, datetime.datetime):
-    #             return o.__str__()
-    #             # PLEASE ADD WAY TO GET POST BY TITLE
-    #     return posts_db.find_posts_by_text("postText", text)
 
     def delete_post(post_id):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"UPDATE posts SET isDeleted = 1 WHERE id = {post_id}"
 
         try:
@@ -417,7 +397,7 @@ class posts_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -425,9 +405,9 @@ class posts_db:
         return f"post {post_id} deleted"
 
     def update_post(post_id, column_name, data_value):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"UPDATE posts SET {column_name} = '{data_value}' where id = {post_id}"
 
         try:
@@ -439,7 +419,7 @@ class posts_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -450,9 +430,9 @@ class posts_db:
 class comments_db:
 
     def all_comments_by(column_name, data_value):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"SELECT * FROM comments_vw where {column_name} = '{data_value}'"
 
         try:
@@ -476,10 +456,10 @@ class comments_db:
         return json.dumps({'comments': json_data}, default=myconverter)
 
     def add_comment(text, post_id, parent_id, author):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
-        sql = f"INSERT INTO comments ('{text}', {post_id}, {parent_id}, (select id from users where username = '{author}'))"
+        cursor = mydb.cursor(buffered=True)    #open db cursor
+        sql = f"INSERT INTO comments (text, postId, parentId, userId) VALUES ('{text}', {post_id}, {parent_id}, (select id from users where username = '{author}'))"
 
         try:
             cursor.execute(sql)
@@ -490,7 +470,7 @@ class comments_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -498,9 +478,9 @@ class comments_db:
         return posts_db.all_comments('author', author)
 
     def delete_comment(comment_id):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"UPDATE comments SET isDeleted = 1 WHERE id = {comment_id}"
 
         try:
@@ -512,7 +492,7 @@ class comments_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json        
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -520,9 +500,9 @@ class comments_db:
         return f"comment {comment_id} deleted"
 
     def update_comment(comment_id, text):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"UPDATE comments SET text = '{text}' where id = {comment_id}"
 
         try:
@@ -548,9 +528,9 @@ class votes_db:
     #column_name = 'saved' or 'vote'
     # data_value = '1' for saved, '1' for upvotes, '-1' for downvotes
     def all_votes_by(username, column_name, data_value, type, operation):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"SELECT * FROM votes_vw where voteUsername = '{username}' and {column_name} {operation} '{data_value}' and type = '{type}'"
 
         try:
@@ -563,7 +543,6 @@ class votes_db:
         json_data = [dict(zip([key[0] for key in cursor.description], row))
                      for row in result_set]
         # close database connection
-
         cursor.close()
         mydb.close()
 
@@ -579,9 +558,9 @@ class votes_db:
     # item_id = the post or comment ID
     # if saving the post or comment, set vote = 0 or null.
     def add_vote(username, post_id, comment_id, save, vote):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+        cursor = mydb.cursor(buffered=True)    #open db cursor
         sql = f"INSERT INTO votes (userId, postId, commentId, isSaved, vote) VALUES ((select id from users where username = '{username}'), {post_id}, {comment_id}, {save}, {vote})"
 
         try:
@@ -593,7 +572,7 @@ class votes_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
@@ -606,9 +585,11 @@ class votes_db:
         # data_value = 1 or 0 for 'isSaved', 1,0,-1 for 'vote'
 
     def update_vote(username, post_id, comment_id, column_name, data_value):
-
+        #connect to db
         mydb = dbconnection()
-        cursor = mydb.cursor(buffered=True)
+
+        cursor = mydb.cursor(buffered=True)    #open db cursor
+
         sql = f"UPDATE votes SET {column_name} = {data_value} WHERE userId = (select id from users where username = '{username}') AND postId = {post_id} or commentId = {comment_id}"
 
         try:
@@ -620,7 +601,7 @@ class votes_db:
         # close database connection
         cursor.close()
         mydb.close()
-
+        # catch datetime datatype error for json
         def myconverter(o):
             if isinstance(o, datetime.datetime):
                 return o.__str__()
