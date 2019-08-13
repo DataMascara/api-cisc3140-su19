@@ -475,7 +475,7 @@ class comments_db:
             if isinstance(o, datetime.datetime):
                 return o.__str__()
 
-        return posts_db.all_comments('author', author)
+        return comments_db.all_comments_by('author', author)
 
     def delete_comment(comment_id):
         #connect to db
