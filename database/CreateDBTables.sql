@@ -18,7 +18,7 @@ CREATE TABLE `users` (
     UNIQUE KEY `username` (`username`),
     UNIQUE KEY `email` (`email`)
 );
-SELECT * FROM posts_vw where postId = '1';
+
 
 CREATE TABLE `ports` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -225,7 +225,8 @@ CREATE VIEW comments_vw AS
         u.username AS author,
         u.avatarUrl as authorImg,
         CAST(SUM(vote) AS CHAR (10)) AS votes,
-        parentId
+        parentId,
+        (select cast(count(co.id) as char(10)) from comments co where c.id = co.parentId) as childrenCount
     FROM
         comments c
             LEFT JOIN
@@ -302,7 +303,7 @@ CREATE VIEW users_vw AS
         email,
         description,
         avatarUrl,
-        CAST(SUM(vote) AS CHAR (10)) AS votes,
+        ifnull(CAST(SUM(vote) AS CHAR (10)),0) AS votes,
 		isEmailPrivate,
 		isNotificationsEnabled,
 		isCommentReply
