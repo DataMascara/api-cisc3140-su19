@@ -329,6 +329,53 @@ def vote():
             new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
     return new_votes
 
+
+@app.route("/comment-votes-for-username/", methods=["GET"])
+def get_comment_votes():
+    res = request.get_json()
+    username = res['username']
+    print(username)
+    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+    print(upvotes)
+    return upvotes
+
+@app.route("/vote-comment/", methods=['POST'])
+def vote_comment():
+    res = request.get_json()
+    username = res['username']
+    commentId = res['commentId']
+    value = res['value']
+    originalValue = res['originalValue']
+
+    # if originalValue == 1 and value == ++ you're removing the vote
+    # if originalValue == -1 and value == -- you're removing the vote
+    if originalValue == '1' and value == '++' or originalValue == '-1' and value == '--':
+        new_votes = json.loads(dbmodule.votes_db.add_vote(username, 'null', commentId, 0, 0))
+        try:
+            new_votes['voted_data']
+        except:
+            dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', 0)
+            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+    # if originalValue == '' and value == ++ you're upvoting
+    # if originalValue == '-1' and value == ++ you're upvoting
+    elif originalValue == '' and value == '++' or originalValue == '-1' and value == '++':
+        new_votes = dbmodule.votes_db.add_vote(username, "null", commentId, 0, 1)
+        try:
+            new_votes['voted_data']
+        except:
+            response = dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', 1)
+            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+    # if originalValue == '' and value == -- you're downvoting
+    # if originalValue == '-1' and value == -- you're downvoting
+    elif originalValue == '' and value == '--' or originalValue == '1' and value == '--':
+        new_votes = json.loads(dbmodule.votes_db.add_vote(username, "null", commentId, 0, -1))
+        try:
+            new_votes['voted_data']
+        except:
+            dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', -1)
+            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+    return new_votes
+
 '''
 -----COMMENTS FROM POST
 '''
