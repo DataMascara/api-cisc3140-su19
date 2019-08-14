@@ -27,12 +27,12 @@ def dbconnection():
 
 
 class subscriptions_db:
+
     # by username, portname, or portid
 
     # The function all_subscriptions_by has the inputs column_name (string)
-    # It also takes in the data_value (int?)
-    # Output: the column names that are equal to the search query
-    # ex:
+    # Data_value
+    # Output: the column names that are equal to the search query (data_value)
 
     def all_subscriptions_by(column_name, data_value):
 
@@ -437,7 +437,7 @@ class posts_db:
 
 class comments_db:
 
-    # input is column_name(string) and data_value(int?)
+    # input is column_name(string) and data_value(int or string)
 
     # returns:
 
@@ -548,13 +548,12 @@ class comments_db:
 
 class votes_db:
 
-    # type = 'post' or 'comment'
-    # column_name = 'saved' or 'vote'
-    # data_value = '1' for saved, '1' for upvotes, '-1' for downvotes
 
-    # this functions takes the user_id, column_name, data_value and type
+    # this function takes the user_id(int), column_name ('saved' or 'vote'),
+    # data_value = '1' for saved, '1' for upvotes, '-1' for downvotes
+    # type ('post' or comment')
     # output: it returns the text, author, the username of who votes, the vote[-1,0,1]
-    # and wether it is comment or post
+    # and whether it is comment or post
 
     def all_votes_by(user_id, column_name, data_value, type):
 
