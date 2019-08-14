@@ -213,7 +213,7 @@ def get_post():
     title = req['title']
     print(title)
     db_res = json.loads(dbmodule.posts_db.all_posts_by('postTitle', title))['posts'][0]
-    print(db_res) 
+    print(db_res)
     return db_res
 
 @app.route("/my-posts/", methods=["GET"])
@@ -402,7 +402,7 @@ def get_comments():
         print("PID:")
         print(comment['parentId'])
         if comment['parentId'] != None:
-         {"reply":comment}   
+         {"reply":comment}
          replies.append(comment)
     print(replies)
     # print(comments)
@@ -416,12 +416,12 @@ def add_comment_post():
     text = res['text']
     post_id = res['postId']
     author = res['author']
-    
+
     try:
         parent_id = res['parentId']
-    except: 
+    except:
         parent_id = "NULL"
-    
+
 
     comment = dbmodule.comments_db.add_comment(text, post_id, parent_id, author)
     print("okay")
@@ -438,6 +438,22 @@ def post_by_id():
     print(post)
     return post
 
+'''
+-----COMMENTS FROM POST
+'''
+@app.route("/comments-by-user/", methods=["GET"])
+def getUerComments():
+    res = request.get_json()
+    # Get's comments given userId
+    userId = res['userId']
+    # username = res['username']
+    response = json.loads(dbmodule.comments_db.all_comments_by('userId',userId))
+    # response = json.loads(dbmodule.comments_db.all_comments_by('author',username))
+    comments = []
+    for comment in db_comm['comments']:
+        comments.append(comment)
+    # print(comments)
+    return jsonify({"comments":comments})
 
 
 
