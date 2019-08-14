@@ -432,20 +432,19 @@ def post_by_id():
     return post
 
 '''
------COMMENTS FROM POST
+-----COMMENTS FROM USER
 '''
 @app.route("/comments-by-user/", methods=["GET"])
 def getUerComments():
     res = request.get_json()
-    # Get's comments given userId
-    userId = res['userId']
-    # username = res['username']
-    response = json.loads(dbmodule.comments_db.all_comments_by('userId',userId))
-    # response = json.loads(dbmodule.comments_db.all_comments_by('author',username))
+    # Get's comments given userName
+    username = res['username']
+    response = json.loads(dbmodule.comments_db.all_comments_by('author',username))
+    print(response)
     comments = []
-    for comment in db_comm['comments']:
+    for comment in response['comments']:
         comments.append(comment)
-    # print(comments)
+
     return jsonify({"comments":comments})
 
 
