@@ -18,6 +18,7 @@ CREATE TABLE `users` (
     UNIQUE KEY `username` (`username`),
     UNIQUE KEY `email` (`email`)
 );
+SELECT * FROM posts_vw where postId = '1';
 
 CREATE TABLE `ports` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -46,15 +47,14 @@ CREATE TABLE `posts` (
         REFERENCES `users` (`id`),
     KEY `fkIdx_34` (`portId`),
     CONSTRAINT `FK_34` FOREIGN KEY (`portId`)
-        REFERENCES `ports` (`id`),
-    UNIQUE KEY `title` (`title`)
+        REFERENCES `ports` (`id`)
 );
 
 CREATE TABLE `comments` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `postId` INTEGER NOT NULL,
     `text` TEXT NOT NULL,
-    `parentId` INTEGER NULL,
+    `parentId` INTEGER NULL DEFAULT NULL,
     `isDeleted` BOOLEAN NOT NULL DEFAULT 0,
     `userId` INTEGER NOT NULL,
     `dateModified` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -67,6 +67,7 @@ CREATE TABLE `comments` (
     CONSTRAINT `FK_54` FOREIGN KEY (`postId`)
         REFERENCES `posts` (`id`)
 );
+
 
 CREATE TABLE `subscriptions` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -194,6 +195,7 @@ CREATE VIEW posts_vw AS
         p.text AS postText,
         p.imageUrl AS image,
         u.username AS author,
+        u.avatarUrl AS authorImg,
         CAST(SUM(vote) AS CHAR (10)) AS votes,
         (SELECT 
                 CAST(COUNT(id) AS CHAR (10))
@@ -221,6 +223,7 @@ CREATE VIEW comments_vw AS
         c.id AS commentId,
         c.text AS commentText,
         u.username AS author,
+        u.avatarUrl as authorImg,
         CAST(SUM(vote) AS CHAR (10)) AS votes,
         parentId
     FROM
@@ -233,7 +236,9 @@ CREATE VIEW comments_vw AS
         users u ON u.id = c.userid
     WHERE
         c.isDeleted = 0
-    GROUP BY c.id;CREATE VIEW subscriptions_vw AS
+    GROUP BY c.id;
+    
+    CREATE VIEW subscriptions_vw AS
     SELECT 
         username, p.id AS portId, p.name AS portName
     FROM
