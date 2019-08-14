@@ -177,21 +177,15 @@ def get_all_ports():
 def new_post():
     res = request.get_json()  # Grab the response as a python dict from json sent
     # User Validation to DB goes here
-    try:
-        img = res['img']
-    except:
-        img = 'https://media.wired.com/photos/5cdefc28b2569892c06b2ae4/master/w_1500,c_limit/Culture-Grumpy-Cat-487386121-2.jpg'     
+    img = res['image']
     title = res["title"]
     text = res["text"]
     portname = res["portname"]
     username = res["username"]
-    user_id = json.loads(dbmodule.users_db.find_users("username", username))["user"][0][
-        "userId"
-    ]
+    user_id = json.loads(dbmodule.users_db.find_users("username", username))["user"][0]["userId"]
     # Returns the added post from this user
     response = json.loads(
-        dbmodule.posts_db.add_post(title, text, portname, username, img)
-    )
+        dbmodule.posts_db.add_post(title, text, portname, username, img))
     # Grab the added post
     db_res = json.loads(dbmodule.posts_db.find_posts_by_text("postText", text))
     # Send that back to the calling_api
