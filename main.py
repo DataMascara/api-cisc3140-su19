@@ -343,10 +343,22 @@ def get_comments():
     res = request.get_json()
     # Get's comments given post ID
     post_id = res['id']
-    comments = json.loads(dbmodule.comments_db.all_comments_by('postId',post_id))
-    print("okay")
+    db_comm = json.loads(dbmodule.comments_db.all_comments_by('postId',post_id))
+    comments = []
+    for comment in db_comm['comments']:
+        if comment['parentId'] == None:
+         comments.append(comment)
     print(comments)
-    return comments
+    replies = []
+    for comment in db_comm['comments']:
+        print("PID:")
+        print(comment['parentId'])
+        if comment['parentId'] != None:
+         {"reply":comment}   
+         replies.append(comment)
+    print(replies)
+    # print(comments)
+    return jsonify({"comments":comments, "replies":replies})
 '''
 ---- ADD COMMENT -----
 '''
@@ -356,11 +368,13 @@ def add_comment_post():
     text = res['text']
     post_id = res['postId']
     author = res['author']
+    
     try:
-        parent_id = res['parent_id']
+        parent_id = res['parentId']
     except: 
-        parent_id = None
-    print("Im not here")
+        parent_id = "NULL"
+    
+
     comment = dbmodule.comments_db.add_comment(text, post_id, parent_id, author)
     print("okay")
     print(comment)
