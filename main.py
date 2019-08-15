@@ -454,7 +454,15 @@ def getUerComments():
 
     return jsonify({"comments":comments})
 
-
+"""
+---- Getting Users in Port ----
+"""
+@app.route("/users-in-port/", methods=['GET'])
+def getUsersInPort():
+    res = request.get_json()
+    portname = res['portname']
+    response = dbmodule.subscriptions_db.all_subscriptions_by("portName", portname)
+    return response
 
 """
 ---- Getting All Users ----
