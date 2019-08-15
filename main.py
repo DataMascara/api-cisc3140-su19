@@ -187,9 +187,9 @@ def new_post():
     response = json.loads(
         dbmodule.posts_db.add_post(title, text, portname, username, img))
     # Grab the added post
-    db_res = json.loads(dbmodule.posts_db.find_posts_by_text("postText", text))
+    # db_res = json.loads(dbmodule.posts_db.find_posts_by_text("postText", text))
     # Send that back to the calling_api
-    return db_res
+    return response
 
 
 # Function dbmodule.posts_db.all_posts_by(column_name, data_value)
