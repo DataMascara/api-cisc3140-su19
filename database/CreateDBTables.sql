@@ -188,7 +188,7 @@ DELIMITER ;
 
 
 CREATE VIEW posts_vw AS
-    SELECT 
+    SELECT
         pr.name AS portName,
         p.id AS postId,
         p.title AS postTitle,
@@ -197,7 +197,7 @@ CREATE VIEW posts_vw AS
         u.username AS author,
         u.avatarUrl AS authorImg,
         CAST(SUM(vote) AS CHAR (10)) AS votes,
-        (SELECT 
+        (SELECT
                 CAST(COUNT(id) AS CHAR (10))
             FROM
                 comments c
@@ -218,10 +218,11 @@ CREATE VIEW posts_vw AS
     ORDER BY p.id;
 
 CREATE VIEW comments_vw AS
-    SELECT 
+    SELECT
         p.postId,
         c.id AS commentId,
         c.text AS commentText,
+        c.dateCreated AS commentDate,
         u.username AS author,
         u.avatarUrl as authorImg,
         CAST(SUM(vote) AS CHAR (10)) AS votes,
@@ -238,9 +239,9 @@ CREATE VIEW comments_vw AS
     WHERE
         c.isDeleted = 0
     GROUP BY c.id;
-    
+
     CREATE VIEW subscriptions_vw AS
-    SELECT 
+    SELECT
         username, p.id AS portId, p.name AS portName
     FROM
         subscriptions s
@@ -271,7 +272,7 @@ CREATE VIEW votes_vw AS
             JOIN
         users uv ON uv.id = v.userid
     WHERE
-        isDeleted = 0 
+        isDeleted = 0
     UNION SELECT DISTINCT
         c.id AS commentId,
         '' AS Title,
@@ -294,7 +295,7 @@ CREATE VIEW votes_vw AS
         c.isDeleted = 0;
 
 CREATE VIEW users_vw AS
-    SELECT 
+    SELECT
         u.id AS userId,
         password,
         username,
@@ -318,24 +319,16 @@ CREATE VIEW users_vw AS
 
 
 DELIMITER $$
-#this function adds a post and returns the new post's ID. 
+#this function adds a post and returns the new post's ID.
 CREATE FUNCTION add_post(title varchar(360), text varchar(1000), port_name varchar(30), author varchar(30), image text) RETURNS INTEGER
     DETERMINISTIC
 BEGIN
     DECLARE newId INTEGER;
 	#insert the post
-    INSERT INTO posts (title, text, portId, userid, imageUrl) VALUES 
+    INSERT INTO posts (title, text, portId, userid, imageUrl) VALUES
     (title, text, (SELECT id FROM ports WHERE name = port_name), (SELECT id FROM users WHERE username = author), image);
 	#set the variable to be the new post's ID
  	SET newId =  LAST_INSERT_ID();
 	#return the new ID
  RETURN (newId);
 END
-
-
-
-
-
-
-
-
