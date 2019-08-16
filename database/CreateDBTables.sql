@@ -227,7 +227,8 @@ CREATE VIEW comments_vw AS
         u.avatarUrl as authorImg,
         CAST(SUM(vote) AS CHAR (10)) AS votes,
         parentId,
-        (select cast(count(co.id) as char(10)) from comments co where c.id = co.parentId) as childrenCount
+        (select cast(count(co.id) as char(10)) from comments co where c.id = co.parentId) as childrenCount,
+        c.dateCreated
     FROM
         comments c
             LEFT JOIN
