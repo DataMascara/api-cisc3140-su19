@@ -309,7 +309,12 @@ def savePost():
 def get_saved():
     res = request.get_json()
     username = res["username"]
-    return json.loads(dbmodule.votes_db.all_votes_by(username, "isSaved", 1, "post", "="))
+    ids = json.loads(dbmodule.votes_db.all_votes_by(username, "isSaved", 1, "post", "="))["voted_data"]
+    posts = []
+    for id in ids:
+        post = json.loads(dbmodule.posts_db.all_posts_by("postId", id["postId"]))
+        posts.append(post["posts"][0])
+    return json.dumps({"posts": posts})
 
 @app.route("/votes-for-username/", methods=["GET"])
 def get_votes():
