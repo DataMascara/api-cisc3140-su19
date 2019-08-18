@@ -289,6 +289,28 @@ def get_subscribed_posts():
     return json.dumps({"posts": posts})
 
 
+@app.route("/save/", methods=["POST"])
+def savePost():
+    res = request.get_json()
+    username = res["username"]
+    postId = res["postId"]
+    button = res["button"]
+    if button == 'Save Post':
+        dbmodule.votes_db.update_vote(username, postId, 'null', 'isSaved', 0)
+    elif button == 'Post Saved':
+        try:
+            dbmodule.votes_db.add_vote(username, postId, 'null', 1, 0)['voted_data']
+        except:
+            dbmodule.votes_db.update_vote(username, postId, 'null', 'isSaved', 1)
+
+    return json.loads(dbmodule.votes_db.all_votes_by(username, "isSaved", 1, "post", "="))
+
+@app.route("/saved-posts-for-username/", methods=["GET"])
+def get_saved():
+    res = request.get_json()
+    username = res["username"]
+    return json.loads(dbmodule.votes_db.all_votes_by(username, "isSaved", 1, "post", "="))
+
 @app.route("/votes-for-username/", methods=["GET"])
 def get_votes():
     res = request.get_json()
