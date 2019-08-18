@@ -294,9 +294,10 @@ def get_votes():
     res = request.get_json()
     username = res['username']
     print(username)
-    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
+    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))['voted_data']
+    upvotes = list(map(lambda x: {"postId": x["postId"], "vote": x["vote"]}, upvotes))
     print(upvotes)
-    return upvotes
+    return json.dumps({"voted_data": upvotes})
 
 
 @app.route("/vote/", methods=['POST'])
@@ -310,12 +311,7 @@ def vote():
     # if originalValue == 1 and value == ++ you're removing the vote
     # if originalValue == -1 and value == -- you're removing the vote
     if originalValue == '1' and value == '++' or originalValue == '-1' and value == '--':
-        new_votes = json.loads(dbmodule.votes_db.add_vote(username, postId, 'null', 0, 0))
-        try:
-            new_votes['voted_data']
-        except:
-            dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 0)
-            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
+        dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 0)
     # if originalValue == '' and value == ++ you're upvoting
     # if originalValue == '-1' and value == ++ you're upvoting
     elif originalValue == '' and value == '++' or originalValue == '-1' and value == '++':
@@ -324,7 +320,6 @@ def vote():
             new_votes['voted_data']
         except:
             response = dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1)
-            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
     # if originalValue == '' and value == -- you're downvoting
     # if originalValue == '-1' and value == -- you're downvoting
     elif originalValue == '' and value == '--' or originalValue == '1' and value == '--':
@@ -333,8 +328,10 @@ def vote():
             new_votes['voted_data']
         except:
             dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', -1)
-            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))
-    return new_votes
+    
+    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "post", "<>"))['voted_data']
+    upvotes = list(map(lambda x: {"postId": x["postId"], "vote": x["vote"]}, upvotes))
+    return json.dumps({"voted_data": upvotes})
 
 
 @app.route("/comment-votes-for-username/", methods=["GET"])
@@ -342,9 +339,10 @@ def get_comment_votes():
     res = request.get_json()
     username = res['username']
     print(username)
-    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))["voted_data"]
+    upvotes = list(map(lambda x: {"postId": x["postId"], "vote": x["vote"]}, upvotes))
     print(upvotes)
-    return upvotes
+    return json.dumps({"voted_data": upvotes})
 
 @app.route("/vote-comment/", methods=['POST'])
 def vote_comment():
@@ -381,7 +379,9 @@ def vote_comment():
         except:
             dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', -1)
             new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
-    return new_votes
+    upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))["voted_data"]
+    upvotes = list(map(lambda x: {"postId": x["postId"], "vote": x["vote"]}, upvotes))
+    return json.dumps({"voted_data": upvotes})
 
 '''
 -----COMMENTS FROM POST
