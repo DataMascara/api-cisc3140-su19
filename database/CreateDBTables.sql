@@ -251,7 +251,8 @@ CREATE VIEW comments_vw AS
             JOIN
         ports p ON p.id = s.portid
     WHERE
-        s.isActive = 1;
+        s.isActive = 1
+        and u.isActive = 1;
 
 CREATE VIEW votes_vw AS
     SELECT DISTINCT
