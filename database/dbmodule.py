@@ -593,7 +593,7 @@ class votes_db:
 
         cursor = mydb.cursor(buffered=True)    #open db cursor
 
-        sql = f"UPDATE votes SET {column_name} = {data_value} WHERE userId = (select id from users where username = '{username}') AND postId = {post_id} or commentId = {comment_id}"
+        sql = f"UPDATE votes SET {column_name} = {data_value} WHERE userId = (select id from users where username = '{username}') AND (postId = {post_id} or commentId = {comment_id})"
 
         try:
             cursor.execute(sql)
