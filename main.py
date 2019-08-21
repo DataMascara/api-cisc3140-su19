@@ -346,7 +346,7 @@ def vote():
         try:
             new_votes['voted_data']
         except:
-            response = dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1)
+            dbmodule.votes_db.update_vote(username, postId, 'null', 'vote', 1)
     # if originalValue == '' and value == -- you're downvoting
     # if originalValue == '-1' and value == -- you're downvoting
     elif originalValue == '' and value == '--' or originalValue == '1' and value == '--':
@@ -382,10 +382,6 @@ def vote_comment():
     # if originalValue == 1 and value == ++ you're removing the vote
     # if originalValue == -1 and value == -- you're removing the vote
     if originalValue == '1' and value == '++' or originalValue == '-1' and value == '--':
-        new_votes = json.loads(dbmodule.votes_db.add_vote(username, 'null', commentId, 0, 0))
-        try:
-            new_votes['voted_data']
-        except:
             dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', 0)
             new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
     # if originalValue == '' and value == ++ you're upvoting
@@ -395,8 +391,7 @@ def vote_comment():
         try:
             new_votes['voted_data']
         except:
-            response = dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', 1)
-            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+            dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', 1)
     # if originalValue == '' and value == -- you're downvoting
     # if originalValue == '-1' and value == -- you're downvoting
     elif originalValue == '' and value == '--' or originalValue == '1' and value == '--':
@@ -405,7 +400,7 @@ def vote_comment():
             new_votes['voted_data']
         except:
             dbmodule.votes_db.update_vote(username, "null", commentId, 'vote', -1)
-            new_votes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))
+    
     upvotes = json.loads(dbmodule.votes_db.all_votes_by(username, "vote", 0, "comment", "<>"))["voted_data"]
     upvotes = list(map(lambda x: {"postId": x["postId"], "vote": x["vote"]}, upvotes))
     return json.dumps({"voted_data": upvotes})
